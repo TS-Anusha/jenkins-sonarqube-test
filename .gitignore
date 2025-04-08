@@ -1,0 +1,9 @@
+
+.env
+summarizer/
+
+
+# Compiled Python bytecode
+*.py[cod]
+
+
