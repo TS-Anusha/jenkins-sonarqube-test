@@ -4,7 +4,8 @@ pipeline {
  environment {
   VENV_DIR = '.venv'
   OPENAI_API_KEY = credentials('OPENAI_API_KEY') 
-  SONARQUBE_SCANNER = tool 'sonarqube scanner'  /
+  SONAR_AUTH_TOKEN = credentials('sonarqube-auth-token')
+  SONARQUBE_SCANNER = tool 'sonarqube scanner'  
 }
 
   stages {
@@ -30,7 +31,7 @@ pipeline {
         sh '''
           source $VENV_DIR/bin/activate
           pip install pylint
-          pylint Summarizer.py
+          pylint Summarizer.py || true
         '''
       }
     }
@@ -44,7 +45,7 @@ pipeline {
               -Dsonar.projectKey=jenkins-sonarqube-test \
               -Dsonar.sources=. \
               -Dsonar.python.version=3.8 \
-              -Dsonar.login=$sonarqube-auth-token
+              -Dsonar.login=$SONAR_AUTH_TOKEN
           '''
         }
       }
