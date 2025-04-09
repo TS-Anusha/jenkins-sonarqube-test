@@ -44,8 +44,9 @@ pipeline {
             ${SONARQUBE_SCANNER}/bin/sonar-scanner \
               -Dsonar.projectKey=jenkins-sonarqube-test \
               -Dsonar.sources=. \
-              -Dsonar.python.version=3.8 \
-              -Dsonar.login=$SONAR_AUTH_TOKEN
+              -Dsonar.inclusions=**/*.py \
+              -Dsonar.python.version=3.10 \
+              -Dsonar.token=$SONAR_AUTH_TOKEN
           '''
         }
       }
