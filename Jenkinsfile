@@ -1,12 +1,12 @@
 pipeline {
   agent any
 
- environment {
-  VENV_DIR = '.venv'
-  OPENAI_API_KEY = credentials('OPENAI_API_KEY') 
-  SONAR_AUTH_TOKEN = credentials('sonarqube-auth-token')
-  SONARQUBE_SCANNER = tool 'sonarqube scanner'  
-}
+  environment {
+    VENV_DIR = '.venv'
+    OPENAI_API_KEY = credentials('OPENAI_API_KEY') 
+    SONAR_AUTH_TOKEN = credentials('sonarqube-auth-token')
+    SONARQUBE_SCANNER = tool 'sonarqube scanner'  
+  }
 
   stages {
     stage('Checkout') {
@@ -19,7 +19,7 @@ pipeline {
       steps {
         sh '''
           python3 -m venv $VENV_DIR
-          source $VENV_DIR/bin/activate
+          . $VENV_DIR/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
         '''
@@ -29,7 +29,7 @@ pipeline {
     stage('Lint') {
       steps {
         sh '''
-          source $VENV_DIR/bin/activate
+          . $VENV_DIR/bin/activate
           pip install pylint
           pylint Summarizer.py || true
         '''
@@ -40,7 +40,7 @@ pipeline {
       steps {
         withSonarQubeEnv('LocalSonarQube') {
           sh '''
-            source $VENV_DIR/bin/activate
+            . $VENV_DIR/bin/activate
             ${SONARQUBE_SCANNER}/bin/sonar-scanner \
               -Dsonar.projectKey=jenkins-sonarqube-test \
               -Dsonar.sources=. \
@@ -62,7 +62,7 @@ pipeline {
     stage('Run Code') {
       steps {
         sh '''
-          source $VENV_DIR/bin/activate
+          . $VENV_DIR/bin/activate
           python Summarizer.py
         '''
       }
